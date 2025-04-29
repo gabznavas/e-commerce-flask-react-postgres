@@ -69,7 +69,7 @@ const LoginPage = () => {
           </FormGroup>
           {error && <FormError>{error}</FormError>}
           {isLoading && <span>Carregando...</span>}
-          <Button className="flex items-center justify-center gap-2">
+          <Button colors="primary" className="flex items-center justify-center gap-2">
             <BiLogIn className="size-5" />
             <span>Entrar</span>
           </Button>

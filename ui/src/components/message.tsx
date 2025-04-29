@@ -21,7 +21,7 @@ const Message = ({ className, colors, children, ...rest }: Props) => {
   }
 
   return (
-    <span className={`  ${colors} ${children}`} {...rest}>{children}</span>
+    <span className={` ${color} ${children}`} {...rest}>{children}</span>
   )
 }
 

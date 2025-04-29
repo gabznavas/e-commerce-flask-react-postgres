@@ -20,7 +20,9 @@ class AuthResource(Resource):
         if not user:
             return {"message": "E-mail ou senha invalidos."}, 400
 
-        password_equals = bcrypt.checkpw(data.get("password").encode("utf-8"), user.password)
+        password_encoded = data.get("password").encode("utf-8")
+        hashed_password = user.password.encode("utf-8")
+        password_equals: bool = bcrypt.checkpw(password_encoded, hashed_password)
         if not password_equals:
             return {"message": "E-mail ou senha invalidos."}, 400
         token_jwt = jwt.encode({"sub": user.email}, Config.SECRET_KEY_JWT, algorithm="HS256")

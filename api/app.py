@@ -8,8 +8,7 @@ from config import Config, DevelopmentConfig, ProductionConfig
 from resources.auth_resource import AuthResource
 from resources.user_resource import UserCreateResource, UserListAllResource, FindUserByIdResource, \
     DeleteUserByIdResource, UpdateUserByIdResource
-
-from seeding.seed_fake_users import seed_fake_users
+from seeding.seed_admin_user import seed_admin_user
 
 # start api instance
 app = Flask(__name__)
@@ -29,7 +28,7 @@ db.init_app(app)
 # init db
 with app.app_context():
     db.create_all()  # Cria as tabelas
-    seed_fake_users()
+    seed_admin_user()
 
 # resources
 api.add_resource(UserCreateResource, "/api/user")
@@ -40,7 +39,7 @@ api.add_resource(UpdateUserByIdResource, "/api/user/<int:user_id>")
 api.add_resource(AuthResource, "/api/auth/login")
 
 # active the cors
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
+CORS(app, resources={r"/*": {"origins": [config.UI_URL]}})
 
 if __name__ == '__main__':
     app.run(debug=config.DEBUG, port=config.HTTP_PORT)

@@ -15,6 +15,7 @@ def seed_fake_users():
                 password=bcrypt.hashpw("123".encode("utf-8"), bcrypt.gensalt())
             )
             db.session.add(user)
+            print(f"Usuário {user} adicionado.")
         db.session.commit()
         print("Usuários adicionados com sucesso.")
     except Exception as ex:

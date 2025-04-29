@@ -10,6 +10,8 @@ from middlewares.jwt_middleware import jwt_required
 from models import User
 
 from db import db
+from seeding.seed_fake_users import seed_fake_users
+
 
 def entity_to_response(user: User) -> dict:
     return {
@@ -41,7 +43,7 @@ class UserCreateResource(Resource):
             new_user = User(
                 name=data["name"].strip(),
                 email=data["email"].strip(),
-                password=bcrypt.hashpw(data["password"].strip().encode("utf-8"), bcrypt.gensalt()),
+                password=bcrypt.hashpw(data["password"].strip().encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
             )
             db.session.add(new_user)
             db.session.commit()
@@ -61,7 +63,11 @@ class UserListAllResource(Resource):
 
 
     def get(self):
+        # TODO: remove isso daqui
         sleep(1)
+        seed_fake_users()
+
+
         args = self.pagination_parser.parse_args()
         page = args["page"]
         limit = args["limit"]
@@ -117,6 +123,9 @@ class UpdateUserByIdResource(Resource):
         if user is None:
             return {"message": "Usuário não encontrado", }, 200
 
+        if user.email == "admin@admin.com":
+            return {"message": "Você não tem permissão para atualizar esse usuário.", }, 401
+
         try:
             user.name = data["name"].strip()
             user.email = data["email"].strip()
@@ -142,6 +151,9 @@ class DeleteUserByIdResource(Resource):
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return {"message": "Usuário não encontrado.", }, 404
+
+        if user.email == "admin@admin.com":
+            return {"message": "Você não tem permissão para deletar esse usuário.", }, 401
 
         db.session.delete(user)
         db.session.commit()
