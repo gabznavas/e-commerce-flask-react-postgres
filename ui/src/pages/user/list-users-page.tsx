@@ -14,7 +14,7 @@ import FormGroup from "../../components/form-group.tsx"
 import Message from "../../components/message.tsx"
 import { BiSearch, } from "react-icons/bi"
 import { IoMdAdd } from "react-icons/io"
-import ListUserTable from "../../components/users/list-user-table.tsx"
+import ListUserTable from "../../components/users/list-user-page/list-user-table.tsx"
 
 type SearchInput = {
   search: string
@@ -43,10 +43,7 @@ const ListUsersPage = () => {
   }, [])
 
   useEffect(() => {
-    if (deleteSuccessMsg) {
-      debugger
-      findUsers()
-    }
+    if (deleteSuccessMsg) findUsers()
   }, [deleteSuccessMsg])
 
   const editUserOnClick = (userId: number) => {
@@ -58,9 +55,8 @@ const ListUsersPage = () => {
       await deleteUserById(userId)
     }
   }
-
   const searchUsersOnSubmit: SubmitHandler<SearchInput> = async data => {
-    await findUsers(data.search)
+    await findUsers(data.search, 0)
   }
 
   const goToPage = async (page: number) => {
@@ -91,7 +87,7 @@ const ListUsersPage = () => {
                 <Button className="flex items-center gap-2" colors="primary"
                   onClick={() => navigate(routePaths.createUser)}>
                   <IoMdAdd />
-                  <span> Criar usuário</span>
+                  <span>Novo usuário</span>
                 </Button>
               </div>
             </div>
