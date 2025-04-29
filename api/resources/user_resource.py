@@ -63,11 +63,6 @@ class UserListAllResource(Resource):
 
 
     def get(self):
-        # TODO: remove isso daqui
-        sleep(1)
-        seed_fake_users()
-
-
         args = self.pagination_parser.parse_args()
         page = args["page"]
         limit = args["limit"]

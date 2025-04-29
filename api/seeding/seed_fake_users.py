@@ -7,12 +7,13 @@ from db import db
 def seed_fake_users():
     fake = Faker()
 
+    users_count = 37
     try:
-        for _ in range(10):  # Criação de 10 usuários fictícios
+        for _ in range(users_count):
             user = User(
                 name=fake.name(),
                 email=fake.email(),
-                password=bcrypt.hashpw("123".encode("utf-8"), bcrypt.gensalt())
+                password=bcrypt.hashpw("123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
             )
             db.session.add(user)
             print(f"Usuário {user} adicionado.")

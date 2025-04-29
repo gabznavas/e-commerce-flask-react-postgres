@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+class FLASK_ENV:
+    DEVELOPMENT="development"
+    PRODUCTION="production"
+
 class Config:
     DEBUG = bool(int(os.getenv("DEBUG")))
     FLASK_ENV = os.getenv("FLASK_ENV")

@@ -4,11 +4,12 @@ from flask_cors import CORS
 from db import db
 
 
-from config import Config, DevelopmentConfig, ProductionConfig
+from config import Config, DevelopmentConfig, ProductionConfig, FLASK_ENV
 from resources.auth_resource import AuthResource
 from resources.user_resource import UserCreateResource, UserListAllResource, FindUserByIdResource, \
     DeleteUserByIdResource, UpdateUserByIdResource
 from seeding.seed_admin_user import seed_admin_user
+from seeding.seed_fake_users import seed_fake_users
 
 # start api instance
 app = Flask(__name__)
@@ -16,7 +17,7 @@ api = Api(app)
 
 # .env
 config = None
-if Config.FLASK_ENV == 'development':
+if Config.FLASK_ENV == FLASK_ENV.DEVELOPMENT:
     config = DevelopmentConfig
 else:
     config = ProductionConfig
@@ -29,6 +30,10 @@ db.init_app(app)
 with app.app_context():
     db.create_all()  # Cria as tabelas
     seed_admin_user()
+
+    # fake data to devs
+    if Config.FLASK_ENV == FLASK_ENV.DEVELOPMENT:
+        seed_fake_users()
 
 # resources
 api.add_resource(UserCreateResource, "/api/user")
