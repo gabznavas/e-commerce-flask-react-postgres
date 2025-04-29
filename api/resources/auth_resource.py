@@ -18,11 +18,11 @@ class AuthResource(Resource):
 
         user = User.query.filter(func.lower(User.email) == data["email"].lower()).first()
         if not user:
-            return {"message": "e-mail ou senha invalidos!"}, 400
+            return {"message": "E-mail ou senha invalidos."}, 400
 
         password_equals = bcrypt.checkpw(data.get("password").encode("utf-8"), user.password)
         if not password_equals:
-            return {"message": "e-mail ou senha invalidos!"}, 400
+            return {"message": "E-mail ou senha invalidos."}, 400
         token_jwt = jwt.encode({"sub": user.email}, Config.SECRET_KEY_JWT, algorithm="HS256")
 
         return {"message": "Logado com sucesso!", "token": token_jwt}, 200

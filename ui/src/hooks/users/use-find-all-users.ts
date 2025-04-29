@@ -13,7 +13,7 @@ export type PaginatedList<T> = {
 
 const defaultPaginetedUsers = {
   data: [],
-  limit: 10,
+  limit: 8,
   page: 0,
   pages: 0,
   total: 0
@@ -27,7 +27,7 @@ export const useFindAllUsers = () => {
 
   const { token } = useToken()
 
-  const findUsers = async (searchQuery: string = '', page = 0, limit = 10): Promise<void> => {
+  const findUsers = async (searchQuery: string = '', page = paginatedUsers.page, limit = paginatedUsers.limit): Promise<void> => {
     setIsLoading(true)
 
     const url = `${import.meta.env.VITE_API_URL}/user?q=${searchQuery}&page=${page}&limit=${limit}`

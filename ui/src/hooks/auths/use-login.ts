@@ -25,6 +25,7 @@ export function useLogin() {
   }, [])
 
   const login = async (email: string, password: string): Promise<void> => {
+    setError('')
     setIsLoading(true)
 
     const payload = JSON.stringify({ email, password })

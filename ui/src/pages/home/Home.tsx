@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import Header from "../../components/header"
 
 function HomePage() {
 
@@ -6,7 +7,10 @@ function HomePage() {
     document.title = "Home"
   }, [])
   return (
-    <div>bem vindo</div>
+    <>
+      <Header />
+      <div>bem vindo</div>
+    </>
   )
 }
 

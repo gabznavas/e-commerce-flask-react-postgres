@@ -1,29 +1,39 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router"
-import { routePaths } from "../../routes"
 import { SubmitHandler, useForm } from "react-hook-form"
-import HeaderUsers from "../../components/header-users"
-import { User } from "../../hooks/users/use-user.ts"
-import { PaginatedList, useFindAllUsers } from "../../hooks/users/use-find-all-users.ts"
+
+import { routePaths } from "../../routes"
+
+import { useFindAllUsers } from "../../hooks/users/use-find-all-users.ts"
 import useDeleteUser from "../../hooks/users/use-delete-user.ts"
+
+import Header from "../../components/header.tsx"
+import Input from "../../components/input.tsx"
+import Button from "../../components/button.tsx"
+import FormGroup from "../../components/form-group.tsx"
+import Message from "../../components/message.tsx"
+import { BiSearch, } from "react-icons/bi"
+import { IoMdAdd } from "react-icons/io"
+import ListUserTable from "../../components/users/list-user-table.tsx"
 
 type SearchInput = {
   search: string
 }
 
 const ListUsersPage = () => {
-
   const navigate = useNavigate()
+
   const {
-    error: findAllErrors, findUsers, isLoading: isLoadingFindAll, paginatedUsers
+    error: findAllErrorMsg, findUsers, isLoading: isLoadingFindAll, paginatedUsers
   } = useFindAllUsers()
   const {
-    deleteUserById, error: errorDelete, isLoading: isLoadingDelete, ok: deleteOk, success: deleteSuccess
+    deleteUserById, isLoading: isLoadingDelete, successMsg: deleteSuccessMsg, errorMsg: errorDeleteMsg,
   } = useDeleteUser()
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm<SearchInput>()
 
@@ -33,11 +43,11 @@ const ListUsersPage = () => {
   }, [])
 
   useEffect(() => {
-    if (deleteOk) {
+    if (deleteSuccessMsg) {
       debugger
       findUsers()
     }
-  }, [deleteOk])
+  }, [deleteSuccessMsg])
 
   const editUserOnClick = (userId: number) => {
     navigate(`${routePaths.editUser}/${userId}`)
@@ -53,75 +63,58 @@ const ListUsersPage = () => {
     await findUsers(data.search)
   }
 
+  const goToPage = async (page: number) => {
+    await findUsers(getValues('search'), page)
+  }
+
+  const isLoading = isLoadingFindAll || isLoadingDelete
+
   return (
-    <div>
-      <HeaderUsers />
+    <div className="flex flex-col items-center w-full">
+      <Header />
 
-      {isLoadingFindAll && <span>Carregando usuários, aguarde... <br /></span>}
-      {isLoadingDelete && <span>Deletando, aguarde... <br /></span>}
-      {findAllErrors && <span>{findAllErrors} <br /></span>}
-      {errorDelete && <span>{errorDelete} <br /></span>}
-      {deleteSuccess && <span>{deleteSuccess} <br /></span>}
+      <div className="flex flex-col gap-3 mt-8 w-11/12">
+        <form className="flex justify-center w-full" onSubmit={handleSubmit(searchUsersOnSubmit)}>
+          <FormGroup className="flex w-full">
+            <div className="flex w-full justify-between gap-2">
+              <Input className="flex-1" type="text" placeholder="Nome ou E-mail..." {...register('search', {
+                maxLength: {
+                  message: 'máximo de 200 caracteres',
+                  value: 200,
+                }
+              })} />
+              <div className="flex gap-1">
+                <Button type="submit" className="flex items-center gap-2" >
+                  <BiSearch />
+                  <span>Procurar</span>
+                </Button>
+                <Button className="flex items-center gap-2" colors="primary"
+                  onClick={() => navigate(routePaths.createUser)}>
+                  <IoMdAdd />
+                  <span> Criar usuário</span>
+                </Button>
+              </div>
+            </div>
+            {errors.search && <Message >{errors.search.message}</Message>}
+          </FormGroup>
+        </form>
 
-      <form onSubmit={handleSubmit(searchUsersOnSubmit)}>
-        <input type="text" placeholder="Nome ou e-email..." {...register('search', {
-          maxLength: {
-            message: 'máximo de 200 caracteres',
-            value: 200,
-          }
-        })} />
-        {errors.search && <span>{errors.search.message}</span>}
-        <button type="submit">Procurar</button>
-      </form>
-      <br />
-      <ListUserTable
-        paginatedUsers={paginatedUsers}
-        editUserOnClick={editUserOnClick}
-        removeUserOnClick={removeUserOnClick} />
+        <ListUserTable
+          paginatedItems={paginatedUsers}
+          editRowOnClick={editUserOnClick}
+          removeRowOnClick={removeUserOnClick}
+          goToPage={goToPage}
+          isLoading={isLoading}
+          findAllErrors={findAllErrorMsg ? findAllErrorMsg : ''}
+          errorDelete={errorDeleteMsg ? errorDeleteMsg : ''}
+          deleteSuccess={deleteSuccessMsg ? deleteSuccessMsg : ''}
+        />
 
-      {deleteOk && <span>{deleteOk}</span>}
+      </div>
     </div>
   )
 }
 
-type PropsListUserTable = {
-  paginatedUsers: PaginatedList<User>
-  editUserOnClick: (userId: number) => void
-  removeUserOnClick: (userId: number) => void
-}
 
-const ListUserTable = ({ paginatedUsers, editUserOnClick, removeUserOnClick }: PropsListUserTable) => {
-  return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedUsers.data.map((user, index) => (
-            <tr key={index}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>
-                <div>
-                  <button type="button" onClick={() => editUserOnClick(user.id)}>Editar</button>
-                  <button type="button" onClick={() => removeUserOnClick(user.id)}>Remover</button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {paginatedUsers.data.length === 0 && <span>Nenhum usuário encontrado.</span>}
-
-    </div>
-  )
-}
 
 export default ListUsersPage

@@ -3,6 +3,13 @@ import { useNavigate } from "react-router"
 import { routePaths } from "../../routes"
 import { useEffect } from "react"
 import { useLogin } from "../../hooks/auths/use-login"
+import Input from "../../components/input"
+import Label from "../../components/label"
+import FormGroup from "../../components/form-group"
+import Button from "../../components/button"
+import { BiLogIn } from "react-icons/bi"
+import FormError from "../../components/message"
+import Header from "../../components/header"
 
 type Inputs = {
   email: string
@@ -32,35 +39,43 @@ const LoginPage = () => {
   }, [loginSuccess])
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <>
+      <Header />
+      <div className="flex flex-col items-center gap-5 w-full pt-20 rounded-md font">
         <div>
-          <label>E-mail</label>
-          <input type="email" {...register('email', {
-            required: "E-mail é requerido",
-            maxLength: {
-              message: "Máximo de 10 caracteres",
-              value: 40,
-            }
-          })} />
+          <span className="text-orange-600 font-bold text-xl2 md:text-xl">ACESSE SUA CONTA</span>
         </div>
-        {errors.email && <span>{errors.email.message}</span>}
-        <div>
-          <label>Senha</label>
-          <input type="password" {...register('password', {
-            required: "Senha é requerida", maxLength: {
-              message: "Senha máxima de 10 caracteres",
-              value: 10
-            }
-          })} />
-        </div>
-        {errors.password && <span>{errors.password.message}</span>}
-        {error && <span>{error}</span>}
-        {isLoading && <span>Carregando...</span>}
-        <button>Entrar</button>
-        <button type="button">Voltar</button>
-      </form>
-    </div>
+        <form className="flex flex-col gap-2 w-full pr-5 pl-5 md:w-80 lg:w-96" onSubmit={handleSubmit(onSubmit)}>
+          <FormGroup>
+            <Label>E-mail</Label>
+            <Input placeholder="mario@email.com" type="email" {...register('email', {
+              required: "E-mail é requerido",
+              maxLength: {
+                message: "Máximo de 10 caracteres",
+                value: 40,
+              }
+            })} />
+            {errors.email && <FormError>{errors.email.message}</FormError>}
+          </FormGroup>
+          <FormGroup>
+            <Label>Senha</Label>
+            <Input placeholder="******" type="password" {...register('password', {
+              required: "Senha é requerida", maxLength: {
+                message: "Senha máxima de 10 caracteres",
+                value: 10
+              }
+            })} />
+            {errors.password && <FormError>{errors.password.message}</FormError>}
+          </FormGroup>
+          {error && <FormError>{error}</FormError>}
+          {isLoading && <span>Carregando...</span>}
+          <Button className="flex items-center justify-center gap-2">
+            <BiLogIn className="size-5" />
+            <span>Entrar</span>
+          </Button>
+        </form>
+      </div>
+    </>
   )
 }
 

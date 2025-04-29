@@ -4,11 +4,12 @@ import { SubmitHandler, useForm } from "react-hook-form"
 
 import { routePaths } from "../../routes"
 
-import HeaderUsers from "../../components/header-users"
 import useCreateUser from "../../hooks/users/use-create-user"
 import { UserForm } from "../../hooks/users/types"
 import useUpdateUser from "../../hooks/users/use-update-user"
 import useFindUserById from "../../hooks/users/use-find-user"
+import Header from "../../components/header"
+import Button from "../../components/button"
 
 function FormUserPage() {
   const navigate = useNavigate()
@@ -77,7 +78,11 @@ function FormUserPage() {
 
   return (
     <div>
-      <HeaderUsers />
+      <Header />
+      <Button onClick={() => navigate(routePaths.listUsers)}>
+        Listar usuários
+      </Button>
+
       {isLoadingFindUser && <span>Carregando...</span>}
       {errorFindUser && <span>Carregando...</span>}
       <form onSubmit={handleSubmit(onSubmit)}>

@@ -4,17 +4,13 @@ import './index.css'
 
 import { BrowserRouter } from 'react-router'
 import RoutesComponent from './routes'
-import Header from './components/header'
+
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <>
-        <Header />
-        <br></br>
-        <RoutesComponent />
-      </>
+      <RoutesComponent />
     </BrowserRouter>
   </StrictMode>,
 )

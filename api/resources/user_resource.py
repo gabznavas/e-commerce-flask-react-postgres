@@ -1,3 +1,6 @@
+from threading import Thread
+from time import sleep
+
 import bcrypt
 from flask import request
 from flask_restful import Resource, reqparse
@@ -58,6 +61,7 @@ class UserListAllResource(Resource):
 
 
     def get(self):
+        sleep(1)
         args = self.pagination_parser.parse_args()
         page = args["page"]
         limit = args["limit"]

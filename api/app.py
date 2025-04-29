@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-import os
 from db import db
+
 
 from config import Config, DevelopmentConfig, ProductionConfig
 from resources.auth_resource import AuthResource
 from resources.user_resource import UserCreateResource, UserListAllResource, FindUserByIdResource, \
     DeleteUserByIdResource, UpdateUserByIdResource
+
+from seeding.seed_fake_users import seed_fake_users
 
 # start api instance
 app = Flask(__name__)
@@ -23,9 +25,11 @@ app.config.from_object(config)
 
 # init db and create table
 db.init_app(app)
-with app.app_context():
-    db.create_all()
 
+# init db
+with app.app_context():
+    db.create_all()  # Cria as tabelas
+    seed_fake_users()
 
 # resources
 api.add_resource(UserCreateResource, "/api/user")
