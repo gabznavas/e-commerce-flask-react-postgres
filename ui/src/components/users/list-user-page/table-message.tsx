@@ -1,4 +1,4 @@
-import InfoTable from "../../info-table"
+import Message from "../../message"
 
 type StatusRowProps = {
   message: string
@@ -8,7 +8,7 @@ const TableMessage = ({ message }: StatusRowProps) => {
   return (
     <tr>
       <td colSpan={3}>
-        <InfoTable>{message}</InfoTable>
+        <Message>{message}</Message>
       </td>
     </tr>
   )

@@ -6,7 +6,7 @@ const Input = ({ className, ...rest }: Props) => {
   return (
     <input
       className={`border border-gray-400 rounded-sm h-10 p-2 font-normal
-        focus:outline-none focus:border-orange-500 ${className}`}
+        focus:outline-none focus:border-blue-500 ${className}`}
       {...rest}
     />
   );

@@ -16,7 +16,7 @@ const Message = ({ className, colors, children, ...rest }: Props) => {
       break
     }
     default: {
-      color = "text-gray-600"
+      color = "text-gray-500"
     }
   }
 

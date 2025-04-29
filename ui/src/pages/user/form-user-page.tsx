@@ -10,6 +10,12 @@ import useUpdateUser from "../../hooks/users/use-update-user"
 import useFindUserById from "../../hooks/users/use-find-user"
 import Header from "../../components/header"
 import Button from "../../components/button"
+import Message from "../../components/message"
+import Label from "../../components/label"
+import Input from "../../components/input"
+import FormGroup from "../../components/form-group"
+import { IoMdAdd } from "react-icons/io"
+import { ImCancelCircle } from "react-icons/im"
 
 function FormUserPage() {
   const navigate = useNavigate()
@@ -77,63 +83,73 @@ function FormUserPage() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center w-full">
       <Header />
-      <Button onClick={() => navigate(routePaths.listUsers)}>
-        Listar usuários
-      </Button>
 
-      {isLoadingFindUser && <span>Carregando...</span>}
-      {errorFindUser && <span>Carregando...</span>}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Nome</label>
-          <input type="text" {
-            ...register("name", {
-              required: "Nome é requerido",
+      <div className="flex flex-col items-center gap-3 mt-10 w-11/12">
+        {isLoadingFindUser && <Message>Carregando...</Message>}
+        {errorFindUser && <Message>Carregando...</Message>}
+
+        <form className="flex flex-col justify-center w-80 gap-2" onSubmit={handleSubmit(onSubmit)}>
+          <FormGroup>
+            <Label>Nome</Label>
+            <Input type="text" {
+              ...register("name", {
+                required: "Nome é requerido",
+                maxLength: {
+                  message: "Máximo de 2 caracteres",
+                  value: 50
+                }
+              })} />
+            {errors.name && <span>{errors.name.message}</span>}
+          </FormGroup>
+          <FormGroup>
+            <Label>E-mail</Label>
+            <Input type="email"           {...register("email", {
+              required: "E-mail é requerido",
               maxLength: {
-                message: "Máximo de 2 caracteres",
-                value: 50
+                message: "Máximo de 10 caracteres",
+                value: 40,
               }
             })} />
-          {errors.name && <span>{errors.name.message}</span>}
-        </div>
-        <div>
-          <label>E-mail</label>
-          <input type="email"  {...register("email", {
-            required: "E-mail é requerido",
-            maxLength: {
-              message: "Máximo de 10 caracteres",
-              value: 40,
-            }
-          })} />
-          {errors.email && <span>{errors.email.message}</span>}
-        </div>
-        <div>
-          <label>Senha</label>
-          <input type="password"  {...register("password", {
-            required: "Senha é requerida", maxLength: {
-              message: "Senha máxima de 10 caracteres",
-              value: 10
-            }
-          })} />
-          {errors.password && <span>{errors.password.message}</span>}
-        </div>
-        <div>
-          <label>Confirmação de senha</label>
-          <input type="password"  {...register("passwordConfirmation", {
-            required: "Confirmação de senha é requerida", maxLength: {
-              message: "Senha máxima de 10 caracteres",
-              value: 10
-            }
-          })} />
-          {errors.passwordConfirmation && <span>{errors.passwordConfirmation.message}</span>}
-          {isLoadingCreateUser || isLoadingUpdateUser && <span>Carregando...</span>}
-          {errorCreateUser && <span>{errorCreateUser}</span>}
-          {errorUpdateUser && <span>{errorUpdateUser}</span>}
-        </div>
-        <button type="submit">Enviar</button>
-      </form>
+            {errors.email && <span>{errors.email.message}</span>}
+          </FormGroup>
+          <FormGroup>
+            <Label>Senha</Label>
+            <Input type="password"  {...register("password", {
+              required: "Senha é requerida", maxLength: {
+                message: "Senha máxima de 10 caracteres",
+                value: 10
+              }
+            })} />
+            {errors.password && <span>{errors.password.message}</span>}
+          </FormGroup>
+          <FormGroup>
+            <Label>Confirmação de senha</Label>
+            <Input type="password"  {...register("passwordConfirmation", {
+              required: "Confirmação de senha é requerida", maxLength: {
+                message: "Senha máxima de 10 caracteres",
+                value: 10
+              }
+            })} />
+            {errors.passwordConfirmation && <span>{errors.passwordConfirmation.message}</span>}
+            {isLoadingCreateUser || isLoadingUpdateUser && <span>Carregando...</span>}
+            {errorCreateUser && <span>{errorCreateUser}</span>}
+            {errorUpdateUser && <span>{errorUpdateUser}</span>}
+          </FormGroup>
+          <Button className="flex justify-center items-center gap-2" colors={userId ? "info" : "primary"} type="submit">
+            <IoMdAdd />
+            <span>{userId ? "Atualizar usuário" : "Criar usuário"}</span>
+          </Button>
+          <Button className="flex justify-center items-center gap-2"
+            onClick={() => navigate(routePaths.listUsers)} type="button">
+            <ImCancelCircle />
+            <span>Cancelar</span>
+          </Button>
+        </form>
+
+      </div>
+
     </div>
   )
 }
